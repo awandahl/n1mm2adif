@@ -140,7 +140,7 @@ def gen_adif(contact):
                 + the_date_and_time[17:20]
             )
             print(
-                f"<QSO_DATE:{len(''.join(loggeddate.split('-')))}:d>"
+                f"<QSO_DATE:{len(''.join(loggeddate.split('-')))}>"
                 f"{''.join(loggeddate.split('-'))}",
                 end="\r\n",
                 file=file_descriptor,
