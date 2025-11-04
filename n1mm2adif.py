@@ -124,8 +124,9 @@ def gen_adif(contact):
                 themode = "CW"
             if cabrillo_name in ("CQ-WW-RTTY", "WEEKLY-RTTY"):
                 themode = "RTTY"
-            frequency = str(Decimal(str(contact.get("rxfreq", 0))) / 100000)
-            band = get_adif_band(Decimal(str(contact.get("rxfreq", 0))) / 100000)
+            frequency_hz = Decimal(str(contact.get("rxfreq", 0)))
+            frequency = "{:.3f}".format(frequency_hz / Decimal("1000000"))
+            band = get_adif_band(Decimal(frequency))
             sentrst = contact.get("snt", "")
             rcvrst = contact.get("rcv", "")
             sentnr = str(contact.get("sntnr", "0"))
