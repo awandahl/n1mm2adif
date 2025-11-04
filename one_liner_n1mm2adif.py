@@ -135,7 +135,6 @@ def gen_adif(contact):
             if cabrillo_name in ("CQ-WW-RTTY", "WEEKLY-RTTY"):
                 themode = "RTTY"
 
-            # -- ORIGINAL LOGIC FOR FREQ/BAND HERE --
             frequency = str(Decimal(str(contact.get("rxfreq", 0))) / 100000)
             frequency = pad_freq(frequency)
             band = get_adif_band(Decimal(str(contact.get("rxfreq", 0))) / 100000)
@@ -235,7 +234,7 @@ def gen_adif(contact):
                 fields.append(f"<COMMENT:{len(comment)}>{comment}")
             fields.append("<EOR>")
 
-            # Finally, print your one-liner QSO
+            # Finally, print the one-liner QSO
             print(" ".join(fields), file=file_descriptor)
     except IOError as error:
         print(f"Error saving ADIF file: {error}")
