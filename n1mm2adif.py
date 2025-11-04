@@ -26,6 +26,15 @@ s.bind(("127.0.0.1", multicast_port))
 # s.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, bytes(mreq))
 s.settimeout(0.1)
 
+def pad_freq(freq: str) -> str:
+    if '.' in freq:
+        integer, decimal = freq.split('.')
+        # Pad with zeros to ensure at least 3 decimals
+        if len(decimal) < 3:
+            decimal = decimal.ljust(3, '0')
+        return f"{integer}.{decimal}"
+    else:
+        return f"{freq}.000"
 
 def get_adif_band(freq: Decimal) -> str:
     """xxx"""
@@ -106,6 +115,8 @@ def gen_adif(contact):
     station_callsign = contact.get("stationprefix", "").upper()
     cabrillo_name = contact.get("contestname", "contestname")
     filename = str(Path.home()) + "/" + f"{station_callsign}_adif_export.adi"
+#    Use WSJT-X logfile /home/aw/.local/share/WSJT-X/wsjtx_log.adi
+#   filename = str(Path.home()) + "/" + f".local/share/WSJT-X/wsjtx_log.adi"
 
     # Create file with header if it does not exist already.
     if os.path.exists(filename) is False:
@@ -124,9 +135,9 @@ def gen_adif(contact):
                 themode = "CW"
             if cabrillo_name in ("CQ-WW-RTTY", "WEEKLY-RTTY"):
                 themode = "RTTY"
-            frequency_hz = Decimal(str(contact.get("rxfreq", 0)))
-            frequency = "{:.3f}".format(frequency_hz / Decimal("1000000"))
-            band = get_adif_band(Decimal(frequency))
+            frequency = str(Decimal(str(contact.get("rxfreq", 0))) / 100000)
+            frequency = pad_freq(frequency)
+            band = get_adif_band(Decimal(str(contact.get("rxfreq", 0))) / 100000)
             sentrst = contact.get("snt", "")
             rcvrst = contact.get("rcv", "")
             sentnr = str(contact.get("sntnr", "0"))
